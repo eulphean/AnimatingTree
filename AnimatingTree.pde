@@ -37,8 +37,8 @@ void draw() {
     b.render();
   }
   
-  // Do any 
-  applyPerlin();
+  // Check for perlin noise.
+  // applyPerlin();
 }
 
 void keyPressed() {
