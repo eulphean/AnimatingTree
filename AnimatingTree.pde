@@ -45,9 +45,7 @@ void newTree() {
   if (tree == null) {
     // Setup the arraylist an add one branch to it
     tree = new ArrayList();
-    print ("tree exists");
   } else {
-    print ("clear");
     background(255);
     tree.clear(); 
   }
@@ -71,10 +69,15 @@ void split() {
         b.isChild = false;
         
         // Random number of branches
-        int n = (int) random(1, 4); 
+        int n = (int) random(1, 5); 
         for (int j=0; j < n; j++) {
-          tree.add(b.branch(random(-45, 45)));
+          Branch b1 = b.branch(random(-45, 45));
+          //Branch b2 = b1.branch(random(-45, 45));
+          //tree.add(b1);
+          tree.add(b1);
         }
      }
   }
+  
+  print("New tree size : " + tree.size() + "\n");
 }

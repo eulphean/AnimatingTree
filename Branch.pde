@@ -47,7 +47,6 @@ class Branch {
     float sw = map(length, 0, 285, 1, 4);
     strokeWeight(sw);
     //print ("sw:" + length + "\n");
-    
     line(start.x,start.y,end.x,end.y);
     //ellipseMode(CENTER);
     //ellipse(end.x,end.y,2,2);
