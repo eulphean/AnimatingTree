@@ -3,48 +3,51 @@
 class Branch {
   // Each has a location, velocity, and timer 
   // We could implement this same idea with different data
-  PVector loc;
+  PVector start;
+  PVector end; 
   PVector vel;
   float timer;
   float timerstart;
   
+  // [Note] Very important to maintain this variable. 
+  // This keeps track if we are currently animating. 
+  // Remember (never) try to branch off this if it's 
+  // currently animating. 
+  boolean isAnimating = true; 
+  
   // Check if this branch is a child. If it's, then only
   // split it further. 
-  boolean isChild;
+  boolean isChild = true;
 
   Branch(PVector l, PVector v, float n) {
-    loc = l.get();
+    start = l.get();
+    end = l.get();
     vel = v.get();
     timerstart = n;
     timer = timerstart;
   }
   
-  // Move location
-  void update() {
-    loc.add(vel);
+  // Animate location.
+  void animate() {
     timer--; 
+    
+    if (isAnimating) {
+      end.add(vel);
+    }
+    
+    if (timer < 0) {
+      isAnimating = false;  
+    }
   }
   
-  // Draw a dot at location
+  // Draw a line starting from the start. 
   void render() {
     fill(0);
-    noStroke();
-    ellipseMode(CENTER);
-    ellipse(loc.x,loc.y,2,2);
-  }
-  
-  boolean hasAnimationStopped() {
-    return timer < 0;
-  }
-  
-  // Did the timer run out?
-  boolean timeToBranch() {
-    timer--;
-    if (timer < 0) {
-      return true;
-    } else {
-      return false;
-    }
+    //noStroke();
+    stroke(2);
+    line(start.x,start.y,end.x,end.y);
+    //ellipseMode(CENTER);
+    //ellipse(end.x,end.y,2,2);
   }
 
   // Create a new branch at the current location, but change direction by a given angle
@@ -58,9 +61,7 @@ class Branch {
     // Look, polar coordinates to cartesian!!
     PVector newvel = new PVector(mag*cos(theta),mag*sin(theta));
     
-    isChild = true; 
     // Return a new Branch
-    return new Branch(loc,newvel,timerstart*0.66f);
+    return new Branch(end,newvel,timerstart*0.66f);
   }
-  
 }
