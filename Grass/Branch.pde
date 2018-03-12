@@ -48,6 +48,7 @@ class Branch {
     float length = (PVector.sub(end, start)).mag();
     float sw = map(length, 0, 285, 1, 4);
     strokeWeight(sw);
+    stroke(0, 255, 0);
     //print ("sw:" + length + "\n");
     line(start.x,start.y,end.x,end.y);
 
