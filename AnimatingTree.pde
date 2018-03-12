@@ -4,6 +4,8 @@
 
 // An arraylist that will keep track of all current branches
 ArrayList<Branch> tree;
+float yOff = 0.1;
+boolean isNoise = false;
 
 void setup() {
   //size(200,200);
@@ -17,7 +19,11 @@ void setup() {
 
 void draw() {
   // Try erasing the background to see how it works
-  // background(255);
+  background(255);
+  
+  if (isNoise) {
+    yOff += 0.005;
+  }
  
   // Animate and draw branches. 
   for (int i = 0; i < tree.size(); i++) {
@@ -25,33 +31,73 @@ void draw() {
     Branch b = tree.get(i);
     if (b.isAnimating) {
       b.animate();
-      b.render();
     }
+    
+    // Always render, every branch.
+    b.render();
   }
+  
+  // applyPerlin();
 }
 
 void keyPressed() {
+   // Reset. 
    if (key == 'r') {
-     // New tree. 
      newTree();
    }
    
+   // Split.
    if (key == 's') {
      split();
    }
 }
 
+// Apply perline noise to branch angles.
+void applyPerlin() { 
+  
+  // Track non-animating count
+  int nonAnimating = 0;
+  for (int i=0; i < tree.size(); i++) {
+    Branch b = tree.get(i);
+    if (!b.isAnimating) {
+      nonAnimating++;
+    }
+  }
+  
+  // Is something animating? No, apply perlin.
+  if (nonAnimating == tree.size()) {
+    isNoise = true;
+    // We can apply perlin noise. 
+    for (int i=0; i < tree.size(); i++) {
+      if (!tree.get(i).isRoot) {
+        Branch b = tree.get(i);
+        float oldTheta = b.vel.heading2D();
+        float newTheta = map(noise(i, yOff+i), 0, 1, oldTheta - PI/4, oldTheta + PI/4);
+        // Calculate length
+        float mag = (PVector.sub(b.end, b.start)).mag();
+        // calculate new end vertex 
+        b.end.x = mag*cos(newTheta); b.end.y = mag*sin(newTheta);
+      }
+    }
+  } else {
+     isNoise = false; 
+  }
+}
+
 void newTree() {
+  // A branch has a starting location, a starting "velocity", and a starting "timer" 
+  Branch b = new Branch(new PVector(width,height),new PVector(-2.0,-2.0),100);
+  
   if (tree == null) {
     // Setup the arraylist an add one branch to it
     tree = new ArrayList();
+    // I'm a root. 
+    b.isRoot = true;
   } else {
     background(255);
     tree.clear(); 
   }
-  
-  // A branch has a starting location, a starting "velocity", and a starting "timer" 
-  Branch b = new Branch(new PVector(width,height),new PVector(-2.0,-2.0),100);
+ 
   // Add to arraylist
   tree.add(b);
 }

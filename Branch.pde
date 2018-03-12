@@ -15,9 +15,11 @@ class Branch {
   // currently animating. 
   boolean isAnimating = true; 
   
-  // Check if this branch is a child. If it's, then only
-  // split it further. 
+  // Is it a child? 
   boolean isChild = true;
+  
+  // Is it the root?
+  boolean isRoot = false;
 
   Branch(PVector l, PVector v, float n) {
     start = l.get();
@@ -48,6 +50,7 @@ class Branch {
     strokeWeight(sw);
     //print ("sw:" + length + "\n");
     line(start.x,start.y,end.x,end.y);
+
     //ellipseMode(CENTER);
     //ellipse(end.x,end.y,2,2);
   }
