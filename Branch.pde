@@ -42,9 +42,12 @@ class Branch {
   
   // Draw a line starting from the start. 
   void render() {
-    fill(0);
-    //noStroke();
-    stroke(2);
+    // Calculate the length of this branch. 
+    float length = (PVector.sub(end, start)).mag();
+    float sw = map(length, 0, 285, 1, 4);
+    strokeWeight(sw);
+    //print ("sw:" + length + "\n");
+    
     line(start.x,start.y,end.x,end.y);
     //ellipseMode(CENTER);
     //ellipse(end.x,end.y,2,2);
