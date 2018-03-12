@@ -11,18 +11,8 @@ void setup() {
   background(255);
   smooth();
   
-  // Setup the arraylist and add one branch to it
-  tree = new ArrayList();
-  // A branch has a starting location, a starting "velocity", and a starting "timer" 
-  Branch b = new Branch(new PVector(width,height),new PVector(-2.0,-2.0),100);
-  print (b.isAnimating + " - isAnimating" + "\n");
-  // Add to arraylist
-  tree.add(b);
-}
-
-void mousePressed() {
-  print ("Old size" + tree.size() + "\n");
-  split();
+  // Create a new tree. 
+  newTree();
 }
 
 void draw() {
@@ -34,11 +24,38 @@ void draw() {
     // Get the branch, update and draw it
     Branch b = tree.get(i);
     if (b.isAnimating) {
-      //print ("animating");
       b.animate();
       b.render();
     }
   }
+}
+
+void keyPressed() {
+   if (key == 'r') {
+     // New tree. 
+     newTree();
+   }
+   
+   if (key == 's') {
+     split();
+   }
+}
+
+void newTree() {
+  if (tree == null) {
+    // Setup the arraylist an add one branch to it
+    tree = new ArrayList();
+    print ("tree exists");
+  } else {
+    print ("clear");
+    background(255);
+    tree.clear(); 
+  }
+  
+  // A branch has a starting location, a starting "velocity", and a starting "timer" 
+  Branch b = new Branch(new PVector(width,height),new PVector(-2.0,-2.0),100);
+  // Add to arraylist
+  tree.add(b);
 }
 
 void split() {
