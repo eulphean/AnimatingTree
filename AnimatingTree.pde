@@ -37,7 +37,8 @@ void draw() {
     b.render();
   }
   
-  // applyPerlin();
+  // Do any 
+  applyPerlin();
 }
 
 void keyPressed() {
