@@ -16,7 +16,7 @@ class Tree {
       // A branch has a starting location, a starting "velocity", and a starting "timer" 
       color c = color(255,255,255);
       
-      Branch b = new Branch(new PVector(width, height),new PVector(-2.0,-2.0), 100, c);
+      Branch b = new Branch(new PVector(width, height),new PVector(-2.0,-2.0), 150, c);
       b.isRoot = true;
       
       // Add to branches
