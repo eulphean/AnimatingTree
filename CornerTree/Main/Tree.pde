@@ -4,9 +4,9 @@ class Tree {
    boolean isNoise = false;
    
    // Initial number of target branches.  
-   int targetBranches = 10;
+   int targetBranches = 5;
    
-   // 
+   // Max/Min children off a branch. 
    int maxChildren = 4; 
    int minChildren = 1; 
    
@@ -23,7 +23,7 @@ class Tree {
       color c = color(255,255,255);
       
       // A branch has a starting location, a starting "velocity", and a starting "timer" 
-      Branch b = new Branch(new PVector(width, height),new PVector(-2.0, -2.0), 100, c); // Use 150 for Mac Mini.
+      Branch b = new Branch(new PVector(width, height),new PVector(-2.0, -2.0), 110, c); // Use 150 for Mac Mini.
       
       // Initial root branch. 
       b.isRoot = true;
@@ -64,23 +64,30 @@ class Tree {
       // Go through the tree and check if there is a non-animating branch that we 
       // can split. If we can, then create a random number of branches at random
       // angles from there.
-      // We only want split
       for (int i = 0; i < branches.size(); i++) {
          Branch b = branches.get(i);
-            
+         
+         float nextChildLength = b.timerstart * 0.66 * b.vel.mag();
+         
          // Branch shouldn't be animating. 
          // Max children this branch can have are 3. 
-         if (!b.isAnimating && b.numChildren < maxChildren) {   
+         if (!b.isAnimating && b.numChildren < maxChildren && nextChildLength > 25) {  
+           
+           print("Next child's length " + nextChildLength + "\n");
+           
           // Calculate the max rand value based on the current 
           // number of children. 
           int maxRandVal = maxChildren - b.numChildren;
+          
           int n = (int) random(minChildren, maxRandVal); 
+          
           // Calculate the new target branches. 
           targetBranches = targetBranches - n;
    
           // We don't want to create more than target branches. So we reset 
           // n if target branches are negative. And set targetBranches to 0.
           if (targetBranches < 0) {
+            // Reset n.
             n = n + targetBranches; 
             targetBranches = 0;
           }
@@ -109,6 +116,11 @@ class Tree {
    
    void setNewTargetBranches(int num) {
      targetBranches = num;
+   }
+   
+   // Return the number of branches. 
+   int getNumBranches() {
+      return branches.size(); 
    }
    
    // Maybe this should be in branch.

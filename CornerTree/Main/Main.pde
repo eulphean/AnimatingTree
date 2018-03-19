@@ -7,8 +7,12 @@ import oscP5.*;
 import netP5.*;
 
 ArrayList<Tree> grassField;
+
 Tree tree;
-boolean clear = false;
+
+boolean reset = false;
+
+int maxTreeSize = 4000;
 
 // OSC handler for processing.
 OscP5 oscHandler;
@@ -27,25 +31,26 @@ void setup() {
 }
 
 void draw() {
- // T ry erasing the background to see how it works
+  // Update logic. 
   background(0);
   
-  // Draw the tree. 
-  tree.draw();
-  
-  if (clear) {
+  // Tree height has increased to the max or somebody hit reset. 
+  if (tree.getNumBranches() > maxTreeSize || reset) {
      background(0);
-     clear = false;
+     reset = false;
      tree.clear();
      tree = new Tree();
   }
+  
+  // Draw the tree. 
+  tree.draw();
 }
 
 void keyPressed() {
    // Reset. 
    if (key == 'r') {
      // grassField.clear();
-     clear = true;
+     reset = true;
    }
    
    if (key == '1') {
