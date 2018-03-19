@@ -21,6 +21,9 @@ class Branch {
   
   // Is it the root?
   boolean isRoot = false;
+  
+  // New branch has 0 children.
+  int numChildren = 0;
 
   Branch(PVector l, PVector v, float n, color c) {
     start = l.get();
@@ -28,7 +31,7 @@ class Branch {
     vel = v.get();
     timerstart = n;
     timer = timerstart;
-    branchColor = c; 
+    branchColor = c;
   }
   
   // Animate location.
@@ -46,17 +49,19 @@ class Branch {
   
   // Draw a line starting from the start. 
   void render() {
+    
+    // Keep animating if it's currently animating. 
+    if (isAnimating)  {
+       animate(); 
+    }
+    
     // Calculate the length of this branch. 
     float length = (PVector.sub(end, start)).mag();
     float sw = map(length, 0, 285, 1, 4);
     strokeWeight(sw);
     // Apply the branch color.
     stroke(color(255, 255, 255));
-    //print ("sw:" + length + "\n");
     line(start.x,start.y,end.x,end.y);
-
-    //ellipseMode(CENTER);
-    //ellipse(end.x,end.y,2,2);
   }
   
     // Create a new branch at the current location, but change direction by a given angle

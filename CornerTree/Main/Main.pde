@@ -48,15 +48,44 @@ void keyPressed() {
      clear = true;
    }
    
-   // Split.
-   if (key == 's') {
-     // Split a random grass into subgrass. 
-     // int randIdx = (int) random(0, grassField.size());
-     //Tree grass = grassField.get(randIdx);
-     // grass.split();
-     
-     // Split 
-     tree.split();
+   if (key == '1') {
+      tree.setNewTargetBranches(100);
+   }
+   
+   if (key == '2') {
+      tree.setNewTargetBranches(200); 
+   }
+   
+   if (key == '3') {
+      tree.setNewTargetBranches(300); 
+   }
+   
+   if (key == '4') {
+      tree.setNewTargetBranches(400); 
+   }
+   
+   if (key == '5') {
+      tree.setNewTargetBranches(500); 
+   }
+   
+   if (key == '6') {
+      tree.setNewTargetBranches(600); 
+   }
+   
+   if (key == '7') {
+      tree.setNewTargetBranches(700); 
+   }
+   
+   if (key == '8') {
+      tree.setNewTargetBranches(800); 
+   }
+   
+   if (key == '9') {
+      tree.setNewTargetBranches(900); 
+   }
+   
+   if (key == '0') {
+      tree.setNewTargetBranches(1000); 
    }
    
    if (key == 'g') {

@@ -3,6 +3,13 @@ class Tree {
    float yOff = 0.1;
    boolean isNoise = false;
    
+   // Initial number of target branches.  
+   int targetBranches = 10;
+   
+   // 
+   int maxChildren = 4; 
+   int minChildren = 1; 
+   
    // Constructor
    Tree() {
       print("Tree constructor: " + "\n");
@@ -16,43 +23,41 @@ class Tree {
       color c = color(255,255,255);
       
       // A branch has a starting location, a starting "velocity", and a starting "timer" 
-      Branch b = new Branch(new PVector(width, height),new PVector(-2.0,-2.0), 100, c); // Use 150 for Mac Mini.
+      Branch b = new Branch(new PVector(width, height),new PVector(-2.0, -2.0), 100, c); // Use 150 for Mac Mini.
+      
+      // Initial root branch. 
       b.isRoot = true;
       
       // Add to branches
       branches.add(b);
+      
+      targetBranches--;
    }
    
    void draw() {
-      if (isNoise) {
-         yOff += 0.05;
-      }
+      //if (isNoise) {
+      //   yOff += 0.05;
+      //}
+      
+      // [Update Logic] 
+      // Have I reached my target branches? Split the branches
+      // if I haven't already reached my target. This is the update
+      // logic that keeps running. 
+      if (targetBranches != 0) {
+         split();
+      } 
       
       // Animate and draw branches. 
       for (int i = 0; i < branches.size(); i++) {
         // Get the branch, update and draw it. 
         Branch b =  branches.get(i);
-        
-        // I need a new base condition for the growth here, so I can keep 
-        // growing till that base condition.
-        // Branch length 
-        // Tree size. 
-        
-        if (b.isAnimating) {
-          b.animate();
-        }
-        
         // Always render, every branch.
         b.render();
       }
       
       // [Perlin disabled currently. Come back and fix it.  Constrain the lengths and 
       // check flailer example from openFrameworks to see the 
-      // applyPerlin();
-   }
-   
-   void clear() {
-      branches.clear(); 
+      // applysPerlin();
    }
 
    void split() {
@@ -62,23 +67,48 @@ class Tree {
       // We only want split
       for (int i = 0; i < branches.size(); i++) {
          Branch b = branches.get(i);
-         // Branch shouldn't be animating.
-         // Branch shouldn't be a child.
-         if (!b.isAnimating && b.isChild) {
-            // No more a child. So, we don't split it the next time. 
+            
+         // Branch shouldn't be animating. 
+         // Max children this branch can have are 3. 
+         if (!b.isAnimating && b.numChildren < maxChildren) {   
+          // Calculate the max rand value based on the current 
+          // number of children. 
+          int maxRandVal = maxChildren - b.numChildren;
+          int n = (int) random(minChildren, maxRandVal); 
+          // Calculate the new target branches. 
+          targetBranches = targetBranches - n;
+   
+          // We don't want to create more than target branches. So we reset 
+          // n if target branches are negative. And set targetBranches to 0.
+          if (targetBranches < 0) {
+            n = n + targetBranches; 
+            targetBranches = 0;
+          }
+          
+            // We are about to split this, so it's not a child anymore. 
             b.isChild = false;
             
-            // Random number of branches
-            int n = (int) random(1, 5); 
+            // Begin the split.
             for (int j=0; j < n; j++) {
               color c = color(255, 255, 255);
               Branch newB = b.branch(random(-45, 45), c);
               branches.add(newB);
             }
+            
+            // Increment the number of children this branch has. 
+            b.numChildren = b.numChildren + n;
          }
       }
       
       print("Number of branches : " + branches.size() + "\n");
+   }
+   
+   void clear() {
+      branches.clear(); 
+   }
+   
+   void setNewTargetBranches(int num) {
+     targetBranches = num;
    }
    
    // Maybe this should be in branch.
