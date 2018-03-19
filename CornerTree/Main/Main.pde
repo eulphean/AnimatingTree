@@ -14,7 +14,13 @@ Tree tree;
 
 boolean reset = false;
 
-int maxTreeSize = 4000;
+int maxTreeSize = 3500;
+
+// Compute max and minimum sensor val
+// Map this difference to the number of branches. 
+int maxSensorVal = -9999; 
+int minSensorVal = 9999;
+long delayBeforeUpdate = -1;
 
 // OSC handler for processing.
 OscP5 oscHandler;
@@ -105,18 +111,60 @@ void keyPressed() {
      Tree grass = new Tree();
      grassField.add(grass);
    }
-   
-   // Update Easing Idx using Left and Right arrows. 
-   if (key == LEFT) {
-     
-   }
 }
 
 void oscEvent(OscMessage theOscMessage) {
   /* print the address pattern and the typetag of the received OscMessage */
-  //print("### received an osc message.");
+  //print("### received an osc message.\n");
   //println(theOscMessage.get(0).intValue()); // Capture button state. 
   //println(theOscMessage.get(1).intValue()); // Sensor val.
+  int captureButtonState = theOscMessage.get(0).intValue(); 
+  
+  // Only care about the values when it's high. 
+  if (captureButtonState == 1) {
+    int sensorVal = theOscMessage.get(1).intValue();
+    if (sensorVal > maxSensorVal) {
+       maxSensorVal = sensorVal; 
+    }
+    
+    if (sensorVal < minSensorVal) {
+       minSensorVal = sensorVal; 
+    }
+  }
+  
+  // When are we ready to update the tree? 
+  if (captureButtonState == 0 && maxSensorVal != -9999 && minSensorVal != 9999) {
+    if (delayBeforeUpdate == -1) {
+      // Store the current second.
+      delayBeforeUpdate = millis();
+    }
+
+    // That means user has left the button and we are ready to map the difference 
+    // to the number of branches. 
+    int diff = maxSensorVal - minSensorVal;
+    
+    // Send this data to the tree after a delay or however. 
+    int newBranchesToGrow = (int) map(diff, 0, 175, 50, 1000);
+    // Constrain the growth only to the mapped vals.
+    newBranchesToGrow = constrain(newBranchesToGrow, 50, 1000);
+    
+    long currentSecond = millis();
+    
+    //print ("Delay, CurrentSecond: " + delayBeforeUpdate + ", " + currentSecond + "\n");
+    
+    // We will wait about 5 seconds before updating the tree.
+    if (currentSecond - delayBeforeUpdate > 5000) {
+        print("MinSensorVal, MaxSensorVal, Diff, NewBranchesToGrow : " + minSensorVal + ", " + maxSensorVal + ", " + diff + ", " + newBranchesToGrow + "\n");
+        
+        tree.setNewTargetBranches(newBranchesToGrow);
+        
+        delayBeforeUpdate = -1;
+        
+        // Reset maxSensorVal and minSensorVal.
+        maxSensorVal = -9999;
+        minSensorVal = 9999;
+    }
+  }
 }
 
 void createGrass() {

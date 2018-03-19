@@ -111,7 +111,7 @@ class Tree {
          }
       }
       
-      print("Number of branches : " + branches.size() + "\n");
+      //print("Number of branches : " + branches.size() + "\n");
    }
    
    void clear() {
