@@ -5,6 +5,8 @@
 // An arraylist that will keep track of all current branches
 import oscP5.*;
 import netP5.*;
+import de.looksgood.ani.*;
+import de.looksgood.ani.easing.*;
 
 ArrayList<Tree> grassField;
 
@@ -18,6 +20,9 @@ int maxTreeSize = 4000;
 OscP5 oscHandler;
 
 void setup() {
+  // Initialize animation engine.
+  Ani.init(this);
+  
   //size(200,200);
   fullScreen();
   background(0);

@@ -11,13 +11,7 @@ class Tree {
    int minChildren = 1; 
    
    // Constructor
-   Tree() {
-      print("Tree constructor: " + "\n");
-      // Select a random height and startX position for this tree.
-      //int treeHeight = (int) random(40, 75); 
-      // For a field.
-      //int startX = (int) random (3, width - 3);
-      
+   Tree() {      
       // Array of branches for this tree. 
       branches = new ArrayList();
       color c = color(255,255,255);
@@ -31,6 +25,7 @@ class Tree {
       // Add to branches
       branches.add(b);
       
+      // Subtract from target branches. 
       targetBranches--;
    }
    
@@ -125,33 +120,33 @@ class Tree {
    
    // Maybe this should be in branch.
    // Apply perline noise to branch angles.
-   void applyPerlin() { 
-      // Track non-animating count
-      int nonAnimating = 0;
-      for (int i=0; i < branches.size(); i++) {
-        Branch b = branches.get(i);
-        if (!b.isAnimating) {
-          nonAnimating++;
-        }
-      }
+   //void applyPerlin() { 
+   //   // Track non-animating count
+   //   int nonAnimating = 0;
+   //   for (int i=0; i < branches.size(); i++) {
+   //     Branch b = branches.get(i);
+   //     if (!b.isAnimating) {
+   //       nonAnimating++;
+   //     }
+   //   }
       
-      // Is something animating? No, apply perlin.
-      if (nonAnimating == branches.size()) {
-        isNoise = true;
-        // We can apply perlin noise. 
-        for (int i=0; i < branches.size(); i++) {
-          if (!branches.get(i).isRoot) {
-            Branch b = branches.get(i);
-            float oldTheta = b.vel.heading2D();
-            float newTheta = map(noise(i, yOff+i), 0, 1, oldTheta - PI/4, oldTheta + PI/4);
-            // Calculate length
-            float mag = (PVector.sub(b.end, b.start)).mag();
-            // calculate new end vertex 
-            b.end.x = mag*cos(newTheta); b.end.y = mag*sin(newTheta);
-          }
-        }
-      } else {
-         isNoise = false; 
-      }
-    }
+   //   // Is something animating? No, apply perlin.
+   //   if (nonAnimating == branches.size()) {
+   //     isNoise = true;
+   //     // We can apply perlin noise. 
+   //     for (int i=0; i < branches.size(); i++) {
+   //       if (!branches.get(i).isRoot) {
+   //         Branch b = branches.get(i);
+   //         float oldTheta = b.vel.heading2D();
+   //         float newTheta = map(noise(i, yOff+i), 0, 1, oldTheta - PI/4, oldTheta + PI/4);
+   //         // Calculate length
+   //         float mag = (PVector.sub(b.end, b.start)).mag();
+   //         // calculate new end vertex 
+   //         b.end.x = mag*cos(newTheta); b.end.y = mag*sin(newTheta);
+   //       }
+   //     }
+   //   } else {
+   //      isNoise = false; 
+   //   }
+   // }
 }
