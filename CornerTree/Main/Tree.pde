@@ -68,7 +68,7 @@ class Tree {
          // Max children this branch can have are 3. 
          if (!b.isAnimating && b.numChildren < maxChildren && nextChildLength > 25) {  
            
-           print("Next child's length " + nextChildLength + "\n");
+           //print("Next child's length " + nextChildLength + "\n");
            
           // Calculate the max rand value based on the current 
           // number of children. 

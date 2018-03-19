@@ -1,5 +1,4 @@
 // A class for one branch in the system.
-
 class Branch {
   // Each has a location, velocity, and timer 
   // We could implement this same idea with different data
@@ -30,12 +29,24 @@ class Branch {
   // New branch has 0 children.
   int numChildren = 0;
   
+  // Keep track of both X and Y animation to be completed. 
   boolean isXAnimated = false;
   boolean isYAnimated = false;
   
   // Branch animation. 
   Ani branchXAni;
   Ani branchYAni;
+  
+  // Easing coefficients.
+  Easing[] easings = { 
+    Ani.LINEAR, Ani.QUAD_IN, Ani.QUAD_OUT, Ani.QUAD_IN_OUT, Ani.CUBIC_IN, Ani.CUBIC_IN_OUT, Ani.CUBIC_OUT, Ani.QUART_IN, Ani.QUART_OUT, Ani.QUART_IN_OUT, Ani.QUINT_IN, Ani.QUINT_OUT, Ani.QUINT_IN_OUT, Ani.SINE_IN, Ani.SINE_OUT, Ani.SINE_IN_OUT, Ani.CIRC_IN, Ani.CIRC_OUT, Ani.CIRC_IN_OUT, Ani.EXPO_IN, Ani.EXPO_OUT, Ani.EXPO_IN_OUT, Ani.BACK_IN, Ani.BACK_OUT, Ani.BACK_IN_OUT, Ani.BOUNCE_IN, Ani.BOUNCE_OUT, Ani.BOUNCE_IN_OUT, Ani.ELASTIC_IN, Ani.ELASTIC_OUT, Ani.ELASTIC_IN_OUT
+  };
+  String[] easingsVariableNames = {
+    "Ani.LINEAR", "Ani.QUAD_IN", "Ani.QUAD_OUT", "Ani.QUAD_IN_OUT", "Ani.CUBIC_IN", "Ani.CUBIC_IN_OUT", "Ani.CUBIC_OUT", "Ani.QUART_IN", "Ani.QUART_OUT", "Ani.QUART_IN_OUT", "Ani.QUINT_IN", "Ani.QUINT_OUT", "Ani.QUINT_IN_OUT", "Ani.SINE_IN", "Ani.SINE_OUT", "Ani.SINE_IN_OUT", "Ani.CIRC_IN", "Ani.CIRC_OUT", "Ani.CIRC_IN_OUT", "Ani.EXPO_IN", "Ani.EXPO_OUT", "Ani.EXPO_IN_OUT", "Ani.BACK_IN", "Ani.BACK_OUT", "Ani.BACK_IN_OUT", "Ani.BOUNCE_IN", "Ani.BOUNCE_OUT", "Ani.BOUNCE_IN_OUT", "Ani.ELASTIC_IN", "Ani.ELASTIC_OUT", "Ani.ELASTIC_IN_OUT"
+  };
+  
+  // Public easing index.
+  Easing currentEasing = Ani.QUINT_OUT;
 
   Branch(PVector l, PVector v, float n, color c) {
     start = l.get();
@@ -59,8 +70,8 @@ class Branch {
     float targetY = (start.y + length * sin(vel.heading2D()));
     
     // Define X, Y animation for the branches., 
-    branchXAni = new Ani(this, 2.5, "xEnd", targetX, Ani.EXPO_OUT, "onEnd:xDoneAnimating");
-    branchYAni = new Ani(this, 2.5, "yEnd", targetY, Ani.EXPO_OUT, "onEnd:yDoneAnimating");
+    branchXAni = new Ani(this, 2.5, "xEnd", targetX, currentEasing, "onEnd:xDoneAnimating");
+    branchYAni = new Ani(this, 2.5, "yEnd", targetY, currentEasing, "onEnd:yDoneAnimating");
     
     // Begin animation.
     branchXAni.start();

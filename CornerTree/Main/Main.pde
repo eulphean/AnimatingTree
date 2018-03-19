@@ -103,6 +103,11 @@ void keyPressed() {
      Tree grass = new Tree();
      grassField.add(grass);
    }
+   
+   // Update Easing Idx using Left and Right arrows. 
+   if (key == LEFT) {
+     
+   }
 }
 
 void oscEvent(OscMessage theOscMessage) {
