@@ -56,6 +56,15 @@ class Tree {
    }
 
    void split() {
+      
+      // Make sure all the branches have animated before splitting. 
+      for (int i = 0; i < branches.size(); i++) {
+         Branch b = branches.get(i);
+         if (b.isAnimating) {
+           return; 
+         }
+      }
+      
       // Go through the tree and check if there is a non-animating branch that we 
       // can split. If we can, then create a random number of branches at random
       // angles from there.
