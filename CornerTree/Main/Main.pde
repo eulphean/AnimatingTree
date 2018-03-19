@@ -20,6 +20,8 @@ int maxTreeSize = 4000;
 OscP5 oscHandler;
 
 void setup() {
+  frameRate(25);
+  
   // Initialize animation engine.
   Ani.init(this);
   
