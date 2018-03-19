@@ -3,15 +3,24 @@
 // For every element in the ArrayList, we add 2 more elements, etc. (this is the recursion)
 
 // An arraylist that will keep track of all current branches
+import oscP5.*;
+import netP5.*;
+
 ArrayList<Tree> grassField;
 Tree tree;
 boolean clear = false;
+
+// OSC handler for processing.
+OscP5 oscHandler;
 
 void setup() {
   //size(200,200);
   fullScreen();
   background(0);
   smooth();  
+  
+  // Setup OSC to receive at port 12346.
+  oscHandler = new OscP5(this, 12346);
   
   // Create a tree. 
   tree = new Tree();
@@ -55,6 +64,17 @@ void keyPressed() {
      Tree grass = new Tree();
      grassField.add(grass);
    }
+}
+
+void oscEvent(OscMessage theOscMessage) {
+  /* print the address pattern and the typetag of the received OscMessage */
+  print("### received an osc message.");
+  println(theOscMessage.get(0).intValue()); // Capture button state. 
+  println(theOscMessage.get(1).intValue()); // Sensor val.
+  
+  //int contactButtonState = theOscMessage.get(0).intValue();
+  //int sensorVal = theOscMessage.get(0).intValue();
+  //print("ContactButtonState: " + contactButtonState + " sensorVal: " + sensorVal + "\n");
 }
 
 void createGrass() {
