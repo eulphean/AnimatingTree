@@ -4,7 +4,7 @@ class Tree {
    boolean isNoise = false;
    
    // Initial number of target branches.  
-   int targetBranches = 5;
+   int targetBranches = 7;
    
    // Max/Min children off a branch. 
    int maxChildren = 4; 
@@ -17,7 +17,7 @@ class Tree {
       color c = color(255,255,255);
       
       // A branch has a starting location, a starting "velocity", and a starting "timer" 
-      Branch b = new Branch(new PVector(width, height),new PVector(-2.0, -2.0), 110, c); // Use 150 for Mac Mini.
+      Branch b = new Branch(new PVector(width/2, height),new PVector(0, -2.0), 140, c, 25.0); // Use 150 for Mac Mini.
       
       // Initial root branch. 
       b.isRoot = true;

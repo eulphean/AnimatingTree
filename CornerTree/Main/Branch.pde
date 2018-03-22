@@ -14,6 +14,8 @@ class Branch {
   float timerstart;
   float branchColor;
   
+  float strokeWidth;
+
   // [Note] Very important to maintain this variable. 
   // This keeps track if we are currently animating. 
   // Remember (never) try to branch off this if it's 
@@ -48,12 +50,13 @@ class Branch {
   // Public easing index.
   Easing currentEasing = Ani.QUINT_OUT;
 
-  Branch(PVector l, PVector v, float n, color c) {
+  Branch(PVector l, PVector v, float n, color c, float sw) {
     start = l.get();
     vel = v.get();
     timerstart = n;
     timer = timerstart;
     branchColor = c;
+    strokeWidth = sw;
     
     // Current end vector
     xEnd = start.x; 
@@ -96,13 +99,11 @@ class Branch {
     // Calculate end vector.
     PVector end = new PVector(xEnd, yEnd);
    
-    // Calculate the length of this branch.
-    float length = (PVector.sub(end, start)).mag();
-    float sw = map(length, 0, 285, 1, 4);
-    strokeWeight(sw);
-    
+    strokeWeight(strokeWidth);
     // Apply the branch color.
     stroke(color(255, 255, 255));
+    strokeCap(PROJECT);
+    
     line(start.x,start.y, end.x, end.y);
   }
   
@@ -121,6 +122,6 @@ class Branch {
     PVector end = new PVector(xEnd, yEnd);
     
     // Return a new Branch
-    return new Branch(end,newvel,timerstart*0.66f, branchColor);
+    return new Branch(end,newvel,timerstart*0.66f, branchColor, strokeWidth*0.4);
   }
 }
