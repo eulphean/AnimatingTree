@@ -25,6 +25,9 @@ long delayBeforeUpdate = -1;
 // OSC handler for processing.
 OscP5 oscHandler;
 
+boolean applyPerlin = false;
+boolean showGrid = false;
+
 void setup() {
   frameRate(25);
   
@@ -110,6 +113,14 @@ void keyPressed() {
      // Create a new grass.  
      Tree grass = new Tree();
      grassField.add(grass);
+   }
+   
+   if (key == 'p') {
+      applyPerlin = !applyPerlin; 
+   }
+   
+   if (key == ' ') {
+      showGrid = !showGrid; 
    }
 }
 

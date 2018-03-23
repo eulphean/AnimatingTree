@@ -4,7 +4,7 @@ class Tree {
    boolean isNoise = false;
    
    // Initial number of target branches.  
-   int targetBranches = 7;
+   int targetBranches = 5;
    
    // Max/Min children off a branch. 
    int maxChildren = 4; 
@@ -31,12 +31,10 @@ class Tree {
    
    void draw() {
        noCursor();
-     
-      //if (isNoise) {
-      //   yOff += 0.05;
-      //}
       
       // [Update Logic] 
+      //applyPerlin();
+      
       // Have I reached my target branches? Split the branches
       // if I haven't already reached my target. This is the update
       // logic that keeps running. 
@@ -44,18 +42,73 @@ class Tree {
          split();
       } 
       
-      // Animate and draw branches. 
-      for (int i = 0; i < branches.size(); i++) {
-        // Get the branch, update and draw it. 
-        Branch b =  branches.get(i);
-        // Always render, every branch.
-        b.render();
-      }
       
-      // [Perlin disabled currently. Come back and fix it.  Constrain the lengths and 
-      // check flailer example from openFrameworks to see the 
-      // applysPerlin();
+      if (applyPerlin) {
+        // We pass the root to this and iterate through all the children. 
+        drawBranch(branches.get(0));
+      } else {
+        // Animate and draw branches. 
+        for (int i = 0; i < branches.size(); i++) {
+          // Get the branch, update and draw it. 
+          Branch b =  branches.get(i);
+          // Always render, every branch.
+          b.render();
+        }
+      }
    }
+   
+
+   void drawBranch(Branch b) {
+      translate(b.start.x, b.start.y);
+      recursiveDraw(b);
+   }
+   
+   
+   void recursiveDraw(Branch b) {
+     b.render();
+      
+     if (showGrid) {
+      drawGrid(80, 80, 10);
+     }
+      
+     // Draw all the children. 
+     for (int i = 0; i < b.children.size(); i++) {
+      pushMatrix();   
+        float length = b.timer * b.vel.mag();
+        translate(0, -length);
+        Branch curChildBranch = b.children.get(i);
+        rotate(curChildBranch.vel.heading2D() + PI/2);
+        recursiveDraw(curChildBranch);
+      popMatrix();
+     }
+   }
+  
+  void drawGrid(float gWidth, float gHeight, float size)
+  {
+    pushStyle();
+    noFill();
+    stroke(color(255, 60));
+    
+    for (int x = 0; x < gWidth; x += size)
+    {
+        line(x, 0, x, gHeight);
+    }
+  
+    for (int y = 0; y < gHeight; y += size)
+    {
+        line(0, y, gWidth, y);
+    }
+  
+    rect(0, 0, gWidth, gHeight);
+  
+    stroke(color(0, 255, 0));
+    line(0, 0, gWidth / 2, 0);
+  
+    stroke(color(255, 0, 0));
+    line(0, 0, 0, gHeight / 2);
+  
+    popStyle();
+  }
 
    void split() {
       
@@ -103,6 +156,7 @@ class Tree {
               color c = color(255, 255, 255);
               Branch newB = b.branch(random(-60, 60), c);
               branches.add(newB);
+              b.children.add(newB);
             }
             
             // Increment the number of children this branch has. 
