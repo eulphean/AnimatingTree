@@ -66,7 +66,9 @@ class Tree {
    
    void recursiveDraw(Branch b) {
      b.render();
-      
+     float length = b.timer * b.vel.mag();
+     translate(0, -length);
+     
      if (showGrid) {
       drawGrid(80, 80, 10);
      }
@@ -74,8 +76,6 @@ class Tree {
      // Draw all the children. 
      for (int i = 0; i < b.children.size(); i++) {
       pushMatrix();   
-        float length = b.timer * b.vel.mag();
-        translate(0, -length);
         Branch curChildBranch = b.children.get(i);
         rotate(curChildBranch.vel.heading2D() + PI/2);
         recursiveDraw(curChildBranch);
