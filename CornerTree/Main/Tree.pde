@@ -17,7 +17,7 @@ class Tree {
       color c = color(255,255,255);
       
       // A branch has a starting location, a starting "velocity", and a starting "timer" 
-      Branch b = new Branch(new PVector(width/2, height),new PVector(0, -2.0), 140, c, 25.0); // Use 150 for Mac Mini.
+      Branch b = new Branch(new PVector(width/2, height),new PVector(0, -2.0), 200, c, 30.0); // Use 150 for Mac Mini.
       
       // Initial root branch. 
       b.isRoot = true;
@@ -30,6 +30,8 @@ class Tree {
    }
    
    void draw() {
+       noCursor();
+     
       //if (isNoise) {
       //   yOff += 0.05;
       //}
@@ -102,7 +104,7 @@ class Tree {
             // Begin the split.
             for (int j=0; j < n; j++) {
               color c = color(255, 255, 255);
-              Branch newB = b.branch(random(-45, 45), c);
+              Branch newB = b.branch(random(-60, 60), c);
               branches.add(newB);
             }
             

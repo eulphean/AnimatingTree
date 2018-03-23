@@ -122,6 +122,6 @@ class Branch {
     PVector end = new PVector(xEnd, yEnd);
     
     // Return a new Branch
-    return new Branch(end,newvel,timerstart*0.66f, branchColor, strokeWidth*0.4);
+    return new Branch(end,newvel,timerstart*0.66f, branchColor, strokeWidth*0.45);
   }
 }
