@@ -60,11 +60,8 @@ class Tree {
    void split() {
       
       // Make sure all the branches have animated before splitting. 
-      for (int i = 0; i < branches.size(); i++) {
-         Branch b = branches.get(i);
-         if (b.isAnimating) {
-           return; 
-         }
+      if (areBranchesAnimating()) {
+         return; 
       }
       
       // Go through the tree and check if there is a non-animating branch that we 
@@ -114,6 +111,17 @@ class Tree {
       }
       
       //print("Number of branches : " + branches.size() + "\n");
+   }
+   
+   boolean areBranchesAnimating() {
+     for (int i = 0; i < branches.size(); i++) {
+       Branch b = branches.get(i);
+       if (b.isAnimating) {
+         return true; 
+       }
+     }
+     
+     return false;
    }
    
    void clear() {
