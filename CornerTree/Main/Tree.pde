@@ -1,9 +1,9 @@
 class Tree {
    ArrayList<Branch> branches; 
-   float yOff = 0.1;
+   float yOff = 0.0;
    
    // Initial number of target branches.  
-   int targetBranches = 5;
+   int targetBranches = 10;
    
    // Max/Min children off a branch. 
    int maxChildren = 4; 
@@ -29,8 +29,27 @@ class Tree {
    }
    
    void draw() { 
-      // Add noise to the angles. 
-      applyPerlin();
+      // Define the condition for enabling/disabling perlin noise.
+      // This is done by setting isPerlinMode to true/false.
+      if (targetBranches!=0 || areBranchesAnimating()) {
+        yOff = 0.0;
+        isPerlinMode = false;
+      } else {
+        isPerlinMode = true;
+      }
+      
+      if (isPerlinMode) {
+        //if (yOff > 0.1) {
+        //  yOff = 0;
+        //} else {
+        //  yOff += 0.01; 
+        //}
+        yOff += 0.009;
+        
+        // Add perlin noise
+        Branch branch = branches.get(0);
+        applyPerlin(branch, 0.0);
+      }
       
       // Have I reached my target branches? Split the branches
       // if I haven't already reached my target. This is the update
@@ -39,6 +58,7 @@ class Tree {
          split();
       }
       
+      // Draw logic. 
       if (isPerlinMode) {
         // We pass the root to this and iterate through all the children. 
         pushMatrix();
@@ -57,6 +77,43 @@ class Tree {
       }
    }
    
+   void applyPerlin(Branch b, float xOff) {   
+     xOff += 0.002;
+     // Go through children
+     for (int i = 0; i < b.children.size(); i++) {
+       
+       Branch curChild = b.children.get(i);
+       
+       float currentHeading = curChild.vel.heading();
+           
+       float mag = curChild.vel.mag();
+       float length = curChild.timer * mag;
+
+       // Calculate noise.        
+       float angle = map(length, 0, 158, 0.3, 0.03);
+       angle = constrain(angle, 0.01, 0.5);
+       float minAngle = radians(angle);
+       float noiseOffset = map(noise(xOff + i, yOff + i), 0, 1, -minAngle, minAngle);
+       noiseOffset = constrain(noiseOffset, -minAngle, minAngle);
+       
+       // New heading woth noise.
+       float noiseHeading = currentHeading + noiseOffset;
+        
+       // Calculate new velocity vector based on this updated angle.
+       PVector newVel = new PVector(mag*cos(noiseHeading),mag*sin(noiseHeading)); 
+       curChild.vel = newVel.copy();
+        
+       // Update xEnd and yEnd for this branch based on the current velocity. 
+       // We will update the start position of the current branch from it's parent
+       // in the recursive method. That's really crucial, else it'll branches will
+       // keep breaking.
+       curChild.xEnd = (curChild.start.x + length * cos(newVel.heading())) ; 
+       curChild.yEnd = (curChild.start.y + length * sin(newVel.heading()));
+      
+       applyPerlin(curChild, xOff);
+     }
+   }
+   
    void recursiveDraw(Branch b) {
      b.render();
    
@@ -70,7 +127,9 @@ class Tree {
         Branch curChildBranch = b.children.get(i);
         float prevHeading = b.vel.heading();
         
-        // [NOTE] Very important. 
+        // [NOTE] Very important. Since, we can't update the start position
+        // in the for loop, we have to do it in this recursive loop, where there
+        // is a clear relation between parent and child branches. 
         // Update curChildBranch's start position to previous position's end. 
         curChildBranch.start.x = b.xEnd;
         curChildBranch.start.y = b.yEnd;
@@ -145,43 +204,6 @@ class Tree {
    int getNumBranches() {
       return branches.size(); 
    }
-   
-   // Apply noise to each branch of the tree. 
-   void applyPerlin() { 
-      // Track non-animating count
-     if (targetBranches!=0 || areBranchesAnimating()) {
-       isPerlinMode = false;
-       return;
-     }
-      
-      // Else go through each branch and add some noise to 
-      // each branch. 
-      for (int i=1; i < branches.size(); i++) {
-          Branch curBranch = branches.get(i);
-          Branch prevBranch = branches.get(i-1);
-          
-          float currentHeading = curBranch.vel.heading();
-         
-          float noiseOffset = random(-0.01, 0.01);
-          // New heading woth noise.
-          float noiseHeading = currentHeading + noiseOffset;
-          
-          // Calculate new velocity vector based on this updated angle.
-          float mag = curBranch.vel.mag();
-          PVector newVel = new PVector(mag*cos(noiseHeading),mag*sin(noiseHeading)); 
-          curBranch.vel = newVel.copy();
-          
-          // Update xEnd and yEnd for this branch based on the current velocity. 
-          // We will update the start position of the current branch from it's parent
-          // in the recursive method. That's really crucial, else it'll branches will
-          // keep breaking.
-          float length = curBranch.timer * mag;
-          curBranch.xEnd = (curBranch.start.x + length * cos(newVel.heading())) ; 
-          curBranch.yEnd = (curBranch.start.y + length * sin(newVel.heading()));
-      }
-      
-      isPerlinMode = true; 
-    }
     
    // Secondary helpers.    
    boolean areBranchesAnimating() {

@@ -25,10 +25,17 @@ long delayBeforeUpdate = -1;
 // OSC handler for processing.
 OscP5 oscHandler;
 
+// 
+int randomSeed = 5; 
+int noiseSeed = 0;
+
 boolean isPerlinMode = false;
 
 void setup() {
   frameRate(25);
+  
+  randomSeed(randomSeed);
+  noiseSeed(noiseSeed);
   
   // Initialize animation engine.
   Ani.init(this);
