@@ -71,8 +71,8 @@ class Branch {
   void setupBranchAnimation() {
     // Calculate the targetX, targetY where we are heading.
     float length = timer * vel.mag();
-    float targetX = (start.x + length * cos(vel.heading2D())) ; 
-    float targetY = (start.y + length * sin(vel.heading2D()));
+    float targetX = (start.x + length * cos(vel.heading())) ; 
+    float targetY = (start.y + length * sin(vel.heading()));
     
     // Define X, Y animation for the branches., 
     branchXAni = new Ani(this, 2.5, "xEnd", targetX, currentEasing, "onEnd:xDoneAnimating");
@@ -106,7 +106,7 @@ class Branch {
     stroke(color(255, 255, 255));
     strokeCap(PROJECT);
     
-    if (applyPerlin) {
+    if (isPerlinMode) {
       float length = timer * vel.mag();
       line(0, 0, 0, -length);
     } else {
@@ -117,7 +117,7 @@ class Branch {
   // Create a new branch at the current location, but change direction by a given angle.
   Branch branch(float angle, color branchColor) {
     // What is my current heading
-    float theta = vel.heading2D();
+    float theta = vel.heading();
     // What is my current speed
     float mag = vel.mag();
     // Turn me

@@ -1,7 +1,6 @@
 class Tree {
    ArrayList<Branch> branches; 
    float yOff = 0.1;
-   boolean isNoise = false;
    
    // Initial number of target branches.  
    int targetBranches = 5;
@@ -17,7 +16,7 @@ class Tree {
       color c = color(255,255,255);
       
       // A branch has a starting location, a starting "velocity", and a starting "timer" 
-      Branch b = new Branch(new PVector(width/2, height),new PVector(0, -2.0), 100, c, 9.0); // Use 200, 30 for Mac Mini.
+      Branch b = new Branch(new PVector(width/2, height),new PVector(0, -2.0), 120, c, 9.0); // Use 200, 30 for Mac Mini.
       
       // Initial root branch. 
       b.isRoot = true;
@@ -29,11 +28,9 @@ class Tree {
       targetBranches--;
    }
    
-   void draw() {
-      noCursor();
-      
-      // [Update Logic] 
-      //applyPerlin();
+   void draw() { 
+      // Add noise to the angles. 
+      applyPerlin();
       
       // Have I reached my target branches? Split the branches
       // if I haven't already reached my target. This is the update
@@ -42,7 +39,7 @@ class Tree {
          split();
       }
       
-      if (applyPerlin) {
+      if (isPerlinMode) {
         // We pass the root to this and iterate through all the children. 
         pushMatrix();
           Branch rootBranch = branches.get(0);
@@ -71,12 +68,17 @@ class Tree {
         translate(0, -length);
         
         Branch curChildBranch = b.children.get(i);
-        float prevHeading = b.vel.heading2D();
+        float prevHeading = b.vel.heading();
+        
+        // [NOTE] Very important. 
+        // Update curChildBranch's start position to previous position's end. 
+        curChildBranch.start.x = b.xEnd;
+        curChildBranch.start.y = b.yEnd;
        
         // New heading is actually a sum of previous + currentHeading. 
         // Check Branch() where we add previous heading to randomly generate angle
         // to calculate the new direction. Similarly, here we need to do that. 
-        rotate(curChildBranch.vel.heading2D() - prevHeading); 
+        rotate(curChildBranch.vel.heading() - prevHeading); 
         
         recursiveDraw(curChildBranch);
       popMatrix();
@@ -100,7 +102,7 @@ class Tree {
          
          // Branch shouldn't be animating. 
          // Max children this branch can have are 3. 
-         if (!b.isAnimating && b.numChildren < maxChildren && nextChildLength > 25) {  
+         if (!b.isAnimating && b.numChildren < maxChildren) {  
            
           // Calculate the max rand value based on the current 
           // number of children. 
@@ -135,9 +137,53 @@ class Tree {
          }
       }
       
-      //print("Number of branches : " + branches.size() + "\n");
+      print("Target branches : " + targetBranches + "\n");
+      print("Number of branches : " + branches.size() + "\n");
    }
    
+   // Return the number of branches. 
+   int getNumBranches() {
+      return branches.size(); 
+   }
+   
+   // Apply noise to each branch of the tree. 
+   void applyPerlin() { 
+      // Track non-animating count
+     if (targetBranches!=0 || areBranchesAnimating()) {
+       isPerlinMode = false;
+       return;
+     }
+      
+      // Else go through each branch and add some noise to 
+      // each branch. 
+      for (int i=1; i < branches.size(); i++) {
+          Branch curBranch = branches.get(i);
+          Branch prevBranch = branches.get(i-1);
+          
+          float currentHeading = curBranch.vel.heading();
+         
+          float noiseOffset = random(-0.01, 0.01);
+          // New heading woth noise.
+          float noiseHeading = currentHeading + noiseOffset;
+          
+          // Calculate new velocity vector based on this updated angle.
+          float mag = curBranch.vel.mag();
+          PVector newVel = new PVector(mag*cos(noiseHeading),mag*sin(noiseHeading)); 
+          curBranch.vel = newVel.copy();
+          
+          // Update xEnd and yEnd for this branch based on the current velocity. 
+          // We will update the start position of the current branch from it's parent
+          // in the recursive method. That's really crucial, else it'll branches will
+          // keep breaking.
+          float length = curBranch.timer * mag;
+          curBranch.xEnd = (curBranch.start.x + length * cos(newVel.heading())) ; 
+          curBranch.yEnd = (curBranch.start.y + length * sin(newVel.heading()));
+      }
+      
+      isPerlinMode = true; 
+    }
+    
+   // Secondary helpers.    
    boolean areBranchesAnimating() {
      for (int i = 0; i < branches.size(); i++) {
        Branch b = branches.get(i);
@@ -156,40 +202,4 @@ class Tree {
    void setNewTargetBranches(int num) {
      targetBranches = num;
    }
-   
-   // Return the number of branches. 
-   int getNumBranches() {
-      return branches.size(); 
-   }
-   
-   //// Apply noise to each branch of the tree. 
-   //void applyPerlin() { 
-   //   // Track non-animating count
-   //   int nonAnimating = 0;
-   //   for (int i=0; i < branches.size(); i++) {
-   //     Branch b = branches.get(i);
-   //     if (!b.isAnimating) {
-   //       nonAnimating++;
-   //     }
-   //   }
-      
-   //   // Is something animating? No, apply perlin.
-   //   if (nonAnimating == branches.size()) {
-   //     isNoise = true;
-   //     // We can apply perlin noise. 
-   //     for (int i=0; i < branches.size(); i++) {
-   //       if (!branches.get(i).isRoot) {
-   //         Branch b = branches.get(i);
-   //         float oldTheta = b.vel.heading2D();
-   //         float newTheta = map(noise(i, yOff+i), 0, 1, oldTheta - PI/4, oldTheta + PI/4);
-   //         // Calculate length
-   //         float mag = (PVector.sub(b.end, b.start)).mag();
-   //         // calculate new end vertex 
-   //         b.end.x = mag*cos(newTheta); b.end.y = mag*sin(newTheta);
-   //       }
-   //     }
-   //   } else {
-   //      isNoise = false; 
-   //   }
-   // }
 }

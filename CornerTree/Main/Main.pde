@@ -25,7 +25,7 @@ long delayBeforeUpdate = -1;
 // OSC handler for processing.
 OscP5 oscHandler;
 
-boolean applyPerlin = false;
+boolean isPerlinMode = false;
 
 void setup() {
   frameRate(25);
@@ -37,6 +37,8 @@ void setup() {
   fullScreen();
   background(0);
   smooth();  
+  
+  noCursor();    
   
   // Setup OSC to receive at port 12346.
   oscHandler = new OscP5(this, 12346);
@@ -115,7 +117,7 @@ void keyPressed() {
    }
    
    if (key == 'p') {
-      applyPerlin = !applyPerlin; 
+      isPerlinMode = !isPerlinMode;
    }
 }
 
