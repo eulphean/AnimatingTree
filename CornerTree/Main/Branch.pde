@@ -114,7 +114,7 @@ class Branch {
     }
   }
   
-  // Create a new branch at the current location, but change direction by a given angle
+  // Create a new branch at the current location, but change direction by a given angle.
   Branch branch(float angle, color branchColor) {
     // What is my current heading
     float theta = vel.heading2D();

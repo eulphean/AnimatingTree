@@ -59,15 +59,15 @@ class Tree {
    
 
    void drawBranch(Branch b) {
-      translate(b.start.x, b.start.y);
-      recursiveDraw(b);
+      pushMatrix();
+        translate(b.start.x, b.start.y);
+        recursiveDraw(b);
+      popMatrix();
    }
    
    
    void recursiveDraw(Branch b) {
      b.render();
-     float length = b.timer * b.vel.mag();
-     translate(0, -length);
      
      if (showGrid) {
       drawGrid(80, 80, 10);
@@ -76,8 +76,18 @@ class Tree {
      // Draw all the children. 
      for (int i = 0; i < b.children.size(); i++) {
       pushMatrix();   
+        float length = b.timer * b.vel.mag();
+        
+        translate(0, -length);
+        
         Branch curChildBranch = b.children.get(i);
-        rotate(curChildBranch.vel.heading2D() + PI/2);
+        float prevHeading = b.vel.heading2D();
+       
+        // New heading is actually a sum of previous + currentHeading. 
+        // Check Branch() where we add previous heading to randomly generate angle
+        // to calculate the new direction. Similarly, here we need to do that. 
+        rotate(curChildBranch.vel.heading2D() - prevHeading); 
+        
         recursiveDraw(curChildBranch);
       popMatrix();
      }
