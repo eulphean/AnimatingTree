@@ -30,7 +30,7 @@ class Tree {
    }
    
    void draw() {
-       noCursor();
+      noCursor();
       
       // [Update Logic] 
       //applyPerlin();
@@ -40,12 +40,15 @@ class Tree {
       // logic that keeps running. 
       if (targetBranches != 0) {
          split();
-      } 
-      
+      }
       
       if (applyPerlin) {
         // We pass the root to this and iterate through all the children. 
-        drawBranch(branches.get(0));
+        pushMatrix();
+          Branch rootBranch = branches.get(0);
+          translate(rootBranch.start.x, rootBranch.start.y);
+          recursiveDraw(rootBranch);
+        popMatrix();
       } else {
         // Animate and draw branches. 
         for (int i = 0; i < branches.size(); i++) {
@@ -57,22 +60,9 @@ class Tree {
       }
    }
    
-
-   void drawBranch(Branch b) {
-      pushMatrix();
-        translate(b.start.x, b.start.y);
-        recursiveDraw(b);
-      popMatrix();
-   }
-   
-   
    void recursiveDraw(Branch b) {
      b.render();
-     
-     if (showGrid) {
-      drawGrid(80, 80, 10);
-     }
-      
+   
      // Draw all the children. 
      for (int i = 0; i < b.children.size(); i++) {
       pushMatrix();   
@@ -92,34 +82,7 @@ class Tree {
       popMatrix();
      }
    }
-  
-  void drawGrid(float gWidth, float gHeight, float size)
-  {
-    pushStyle();
-    noFill();
-    stroke(color(255, 60));
-    
-    for (int x = 0; x < gWidth; x += size)
-    {
-        line(x, 0, x, gHeight);
-    }
-  
-    for (int y = 0; y < gHeight; y += size)
-    {
-        line(0, y, gWidth, y);
-    }
-  
-    rect(0, 0, gWidth, gHeight);
-  
-    stroke(color(0, 255, 0));
-    line(0, 0, gWidth / 2, 0);
-  
-    stroke(color(255, 0, 0));
-    line(0, 0, 0, gHeight / 2);
-  
-    popStyle();
-  }
-
+ 
    void split() {
       
       // Make sure all the branches have animated before splitting. 
@@ -138,8 +101,6 @@ class Tree {
          // Branch shouldn't be animating. 
          // Max children this branch can have are 3. 
          if (!b.isAnimating && b.numChildren < maxChildren && nextChildLength > 25) {  
-           
-           //print("Next child's length " + nextChildLength + "\n");
            
           // Calculate the max rand value based on the current 
           // number of children. 
@@ -201,8 +162,7 @@ class Tree {
       return branches.size(); 
    }
    
-   // Maybe this should be in branch.
-   // Apply perline noise to branch angles.
+   //// Apply noise to each branch of the tree. 
    //void applyPerlin() { 
    //   // Track non-animating count
    //   int nonAnimating = 0;

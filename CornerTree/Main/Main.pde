@@ -26,7 +26,6 @@ long delayBeforeUpdate = -1;
 OscP5 oscHandler;
 
 boolean applyPerlin = false;
-boolean showGrid = false;
 
 void setup() {
   frameRate(25);
@@ -117,10 +116,6 @@ void keyPressed() {
    
    if (key == 'p') {
       applyPerlin = !applyPerlin; 
-   }
-   
-   if (key == ' ') {
-      showGrid = !showGrid; 
    }
 }
 
