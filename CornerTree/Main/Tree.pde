@@ -17,7 +17,7 @@ class Tree {
       color c = color(255,255,255);
       
       // A branch has a starting location, a starting "velocity", and a starting "timer" 
-      Branch b = new Branch(new PVector(width/2, height),new PVector(0, -2.0), 120, c, 9.0); // Use 200, 30 for Mac Mini.
+      Branch b = new Branch(new PVector(width/2, height),new PVector(0, -2.0), 200, c, 30.0); // Use 200, 30 for Mac Mini.
       
       // Initial root branch. 
       b.isRoot = true;

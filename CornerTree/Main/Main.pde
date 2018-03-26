@@ -58,6 +58,9 @@ void draw() {
   // Update logic. 
   background(0);
   
+  // Hide cursor when drawing.
+  noCursor();
+  
   // Tree height has increased to the max or somebody hit reset. 
   if (tree.getNumBranches() > maxTreeSize || reset) {
      background(0);
