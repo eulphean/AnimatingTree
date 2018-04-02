@@ -177,7 +177,7 @@ void oscEvent(OscMessage theOscMessage) {
     //print ("Delay, CurrentSecond: " + delayBeforeUpdate + ", " + currentSecond + "\n");
     
     // We will wait about 5 seconds before updating the tree.
-    if (currentSecond - delayBeforeUpdate > 5000) {
+    if (currentSecond - delayBeforeUpdate > 500) {
         print("MinSensorVal, MaxSensorVal, Diff, NewBranchesToGrow : " + minSensorVal + ", " + maxSensorVal + ", " + diff + ", " + newBranchesToGrow + "\n");
         
         tree.setNewTargetBranches(newBranchesToGrow);
