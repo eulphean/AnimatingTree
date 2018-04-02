@@ -94,6 +94,8 @@ class Branch {
   
   // Draw a line starting from the start. 
   void render() {
+    noCursor();
+    
     // Update isAnimating flag to keep track of the animation.
     isAnimating = !(isXAnimated && isYAnimated); 
      

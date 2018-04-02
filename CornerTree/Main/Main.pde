@@ -15,7 +15,7 @@ Tree tree;
 
 boolean reset = false;
 
-int maxTreeSize = 3500;
+int maxTreeSize = 3000;
 
 // Compute max and minimum sensor val
 // Map this difference to the number of branches. 
@@ -43,9 +43,7 @@ void setup() {
   
   fullScreen();
   background(0);
-  smooth();  
-  
-  noCursor();    
+  smooth();   
   
   // Setup OSC to receive at port 12346.
   oscHandler = new OscP5(this, 12346);
@@ -158,9 +156,21 @@ void oscEvent(OscMessage theOscMessage) {
     int diff = maxSensorVal - minSensorVal;
     
     // Send this data to the tree after a delay or however. 
-    int newBranchesToGrow = (int) map(diff, 0, 175, 50, 1000);
+    int newBranchesToGrow = (int) map(diff, 0, 150, 0, 1000);
     // Constrain the growth only to the mapped vals.
-    newBranchesToGrow = constrain(newBranchesToGrow, 50, 1000);
+    newBranchesToGrow = constrain(newBranchesToGrow, 0, 1000);
+    
+    print("Differences, newBranchesToGrow: " + diff + ", " + newBranchesToGrow + "\n");
+    
+    if (newBranchesToGrow < 50) {
+         // Reset and return.
+         delayBeforeUpdate = -1;
+        
+        // Reset maxSensorVal and minSensorVal.
+        maxSensorVal = -9999;
+        minSensorVal = 9999;
+       return; 
+    }
     
     long currentSecond = millis();
     

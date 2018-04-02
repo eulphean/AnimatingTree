@@ -86,10 +86,10 @@ class Tree {
        float length = curChild.timer * mag;
 
        // Calculate noise.        
-       float angle = map(length, 0, 158, 0.3, 0.03);
-       angle = constrain(angle, 0.01, 0.5);
+       float angle = map(length, 0, 300, 0.3, 0.01);
+       angle = constrain(angle, 0.01, 0.3);
        float minAngle = radians(angle);
-       float noiseOffset = map(noise(xOff + i, yOff + i), 0, 1, -minAngle, minAngle);
+       float noiseOffset = map(noise(xOff + i, yOff + i), 0, 1, -minAngle/5, minAngle/5);
        noiseOffset = constrain(noiseOffset, -minAngle, minAngle);
        
        // New heading woth noise.
