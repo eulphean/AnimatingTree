@@ -14,10 +14,10 @@ class Tree {
    Tree() {      
       // Array of branches for this tree. 
       branches = new ArrayList();
-      color c = color(255,255,255);
+      color c = color(164, 244, 66);
       
       // A branch has a starting location, a starting "velocity", and a starting "timer" 
-      Branch b = new Branch(new PVector(width/2, height),new PVector(0, -2.0), 130, c, 9); // Use 200, 30 for Mac Mini.
+      Branch b = new Branch(new PVector(width, height),new PVector(-3.0, -2.0), 105, c, 15); // Use 200, 30 for Mac Mini.
       
       // Initial root branch. 
       b.isRoot = true;
@@ -63,6 +63,7 @@ class Tree {
         pushMatrix();
           Branch rootBranch = branches.get(0);
           translate(rootBranch.start.x, rootBranch.start.y);
+          rotate(PI/2 + rootBranch.vel.heading());
           recursiveDraw(rootBranch);
         popMatrix();
       } else {
@@ -184,8 +185,7 @@ class Tree {
             
             // Begin the split.
             for (int j=0; j < n; j++) {
-              color c = color(255, 255, 255);
-              Branch newB = b.branch(random(-70, 70), c);
+              Branch newB = b.branch(random(-70, 70), b.branchColor);
               branches.add(newB);
               b.children.add(newB);
             }

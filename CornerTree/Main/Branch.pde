@@ -11,7 +11,7 @@ class Branch {
   PVector vel;
   float timer;
   float timerstart;
-  float branchColor;
+  color branchColor;
   
   float strokeWidth;
 
@@ -104,7 +104,7 @@ class Branch {
    
     strokeWeight(strokeWidth);
     // Apply the branch color.
-    stroke(color(255, 255, 255));
+    stroke(branchColor);
     strokeCap(PROJECT);
     
     if (isPerlinMode) {
