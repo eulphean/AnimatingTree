@@ -28,7 +28,7 @@ OscP5 oscHandler;
 int randomSeed = 5; 
 int noiseSeed = 0;
 
-int maxTreeSize = 20000; 
+int maxTreeSize = 10000; 
 
 boolean isPerlinMode = false;
 
@@ -163,13 +163,13 @@ void oscEvent(OscMessage theOscMessage) {
     // then grow new branches accordingly. 
     if (tree.getNumBranches() < 500) {
         // Send this data to the tree after a delay or however. 
-        newBranchesToGrow = (int) map(diff, 0, 50, 0, 500);
-        newBranchesToGrow = constrain(newBranchesToGrow, 0, 500);
+        newBranchesToGrow = (int) map(diff, 0, 50, 0, 250);
+        newBranchesToGrow = constrain(newBranchesToGrow, 0, 250);
     } else if (tree.getNumBranches() < 1200) {
-        newBranchesToGrow = (int) map(diff, 0, 50, 200, 500);
+        newBranchesToGrow = (int) map(diff, 0, 50, 100, 350);
         newBranchesToGrow = constrain(newBranchesToGrow, 200, 500);
     } else {
-        newBranchesToGrow = (int) map(diff, 0, 50, 800, 1500); 
+        newBranchesToGrow = (int) map(diff, 0, 50, 300, 1500); 
         newBranchesToGrow = constrain(newBranchesToGrow, 800, 500);
     }
     

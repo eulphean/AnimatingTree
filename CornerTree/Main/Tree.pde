@@ -7,7 +7,7 @@ class Tree {
    int targetBranches = 2;
    
    // Max/Min children off a branch. 
-   int maxChildren = 5; 
+   int maxChildren = 4; 
    int minChildren = 1; 
    
    // Constructor
@@ -40,7 +40,7 @@ class Tree {
       }
       
       if (isPerlinMode) {
-        yOff += 0.009;
+        yOff += -0.009;
         
         // Add perlin noise
         Branch branch = branches.get(0);
@@ -78,7 +78,7 @@ class Tree {
    }
    
    void applyPerlin(Branch b, float xOff) {   
-     xOff += 0.002;
+     xOff += -0.002;
      // Go through children
      for (int i = 0; i < b.children.size(); i++) {
        
@@ -90,16 +90,14 @@ class Tree {
        float length = curChild.timer * mag;
 
        // Calculate noise.        
-       float angle = map(length, 0, 300, 0.5, 0.1);
-       angle = constrain(angle, 0.01, 0.3);
+       float angle = map(length, 0, 300, 4, 1);
+       angle = constrain(angle, 1, 4);
        float minAngle = radians(angle);
-       float noiseOffset = map(noise(xOff + i, yOff + i), 0, 1, -minAngle, minAngle);
-       noiseOffset = constrain(noiseOffset, -minAngle, minAngle);
+       float noiseOffset = map(noise(xOff + i, yOff + i), 0, 1, -minAngle/10, minAngle/10);
+       noiseOffset = constrain(noiseOffset, -minAngle/10, minAngle/10);
        
-       // New heading woth noise.
+       // New heading with noise.
        float noiseHeading = currentHeading + noiseOffset;
-       
-       // Constrain the noise heading. 
         
        // Calculate new velocity vector based on this updated angle.
        PVector newVel = new PVector(mag*cos(noiseHeading),mag*sin(noiseHeading)); 
@@ -185,7 +183,7 @@ class Tree {
             
             // Begin the split.
             for (int j=0; j < n; j++) {
-              Branch newB = b.branch(random(-70, 70), b.branchColor);
+              Branch newB = b.branch(random(-60, 60), b.branchColor);
               branches.add(newB);
               b.children.add(newB);
             }
