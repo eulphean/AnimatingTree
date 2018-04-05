@@ -15,8 +15,6 @@ Tree tree;
 
 boolean reset = false;
 
-int maxTreeSize = 3000;
-
 // Compute max and minimum sensor val
 // Map this difference to the number of branches. 
 int maxSensorVal = -9999; 
@@ -29,6 +27,8 @@ OscP5 oscHandler;
 // Random seeds.
 int randomSeed = 5; 
 int noiseSeed = 0;
+
+int maxTreeSize = 20000; 
 
 boolean isPerlinMode = false;
 
@@ -59,6 +59,7 @@ void draw() {
   // Hide cursor when drawing.
   noCursor();
   
+
   // Tree height has increased to the max or somebody hit reset. 
   if (tree.getNumBranches() > maxTreeSize || reset) {
      background(0);
@@ -155,14 +156,26 @@ void oscEvent(OscMessage theOscMessage) {
     // to the number of branches. 
     int diff = maxSensorVal - minSensorVal;
     
-    // Send this data to the tree after a delay or however. 
-    int newBranchesToGrow = (int) map(diff, 0, 150, 0, 1000);
-    // Constrain the growth only to the mapped vals.
-    newBranchesToGrow = constrain(newBranchesToGrow, 0, 1000);
+    int newBranchesToGrow = 0; 
+    
+    // Check current number of branches, then change the map values for newBranchesToGrow
+    // Range is 500, 1200, and beyond. If that's the size of the current number of branches, 
+    // then grow new branches accordingly. 
+    if (tree.getNumBranches() < 500) {
+        // Send this data to the tree after a delay or however. 
+        newBranchesToGrow = (int) map(diff, 0, 50, 0, 500);
+        newBranchesToGrow = constrain(newBranchesToGrow, 0, 500);
+    } else if (tree.getNumBranches() < 1200) {
+        newBranchesToGrow = (int) map(diff, 0, 50, 200, 500);
+        newBranchesToGrow = constrain(newBranchesToGrow, 200, 500);
+    } else {
+        newBranchesToGrow = (int) map(diff, 0, 50, 800, 1500); 
+        newBranchesToGrow = constrain(newBranchesToGrow, 800, 500);
+    }
     
     print("Differences, newBranchesToGrow: " + diff + ", " + newBranchesToGrow + "\n");
     
-    if (newBranchesToGrow < 50) {
+    if (newBranchesToGrow < 75) {
          // Reset and return.
          delayBeforeUpdate = -1;
         
@@ -176,8 +189,8 @@ void oscEvent(OscMessage theOscMessage) {
     
     //print ("Delay, CurrentSecond: " + delayBeforeUpdate + ", " + currentSecond + "\n");
     
-    // We will wait about 5 seconds before updating the tree.
-    if (currentSecond - delayBeforeUpdate > 500) {
+    // We will wait for 1 second before updating the tree.
+    if (currentSecond - delayBeforeUpdate > 1000) {
         print("MinSensorVal, MaxSensorVal, Diff, NewBranchesToGrow : " + minSensorVal + ", " + maxSensorVal + ", " + diff + ", " + newBranchesToGrow + "\n");
         
         tree.setNewTargetBranches(newBranchesToGrow);

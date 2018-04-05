@@ -4,10 +4,10 @@ class Tree {
    float yOff = 0.0;
    
    // Initial number of target branches.  
-   int targetBranches = 10;
+   int targetBranches = 2;
    
    // Max/Min children off a branch. 
-   int maxChildren = 4; 
+   int maxChildren = 5; 
    int minChildren = 1; 
    
    // Constructor
@@ -17,7 +17,7 @@ class Tree {
       color c = color(255,255,255);
       
       // A branch has a starting location, a starting "velocity", and a starting "timer" 
-      Branch b = new Branch(new PVector(width/2, height),new PVector(0, -2.0), 200, c, 30.0); // Use 200, 30 for Mac Mini.
+      Branch b = new Branch(new PVector(width/2, height),new PVector(0, -2.0), 130, c, 9); // Use 200, 30 for Mac Mini.
       
       // Initial root branch. 
       b.isRoot = true;
@@ -50,8 +50,11 @@ class Tree {
       // Have I reached my target branches? Split the branches
       // if I haven't already reached my target. This is the update
       // logic that keeps running. 
-      if (targetBranches != 0) {
+      if (targetBranches > 0) {
          split();
+      } else {
+         // Reset target branches.
+         targetBranches = 0;  
       }
       
       // Draw logic. 
@@ -86,14 +89,16 @@ class Tree {
        float length = curChild.timer * mag;
 
        // Calculate noise.        
-       float angle = map(length, 0, 300, 0.3, 0.01);
+       float angle = map(length, 0, 300, 0.5, 0.1);
        angle = constrain(angle, 0.01, 0.3);
        float minAngle = radians(angle);
-       float noiseOffset = map(noise(xOff + i, yOff + i), 0, 1, -minAngle/5, minAngle/5);
+       float noiseOffset = map(noise(xOff + i, yOff + i), 0, 1, -minAngle, minAngle);
        noiseOffset = constrain(noiseOffset, -minAngle, minAngle);
        
        // New heading woth noise.
        float noiseHeading = currentHeading + noiseOffset;
+       
+       // Constrain the noise heading. 
         
        // Calculate new velocity vector based on this updated angle.
        PVector newVel = new PVector(mag*cos(noiseHeading),mag*sin(noiseHeading)); 
@@ -153,8 +158,6 @@ class Tree {
       for (int i = 0; i < branches.size(); i++) {
          Branch b = branches.get(i);
          
-         float nextChildLength = b.timerstart * 0.66 * b.vel.mag();
-         
          // Branch shouldn't be animating. 
          // Max children this branch can have are 3. 
          if (!b.isAnimating && b.numChildren < maxChildren) {  
@@ -170,11 +173,11 @@ class Tree {
    
           // We don't want to create more than target branches. So we reset 
           // n if target branches are negative. And set targetBranches to 0.
-          if (targetBranches < 0) {
-            // Reset n.
-            n = n + targetBranches; 
-            targetBranches = 0;
-          }
+          //if (targetBranches < 0) {
+          //  // Reset n.
+          //  n = n + targetBranches; 
+          //  targetBranches = 0;
+          //}
           
             // We are about to split this, so it's not a child anymore. 
             b.isChild = false;
@@ -182,7 +185,7 @@ class Tree {
             // Begin the split.
             for (int j=0; j < n; j++) {
               color c = color(255, 255, 255);
-              Branch newB = b.branch(random(-60, 60), c);
+              Branch newB = b.branch(random(-70, 70), c);
               branches.add(newB);
               b.children.add(newB);
             }
