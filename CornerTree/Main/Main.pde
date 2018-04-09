@@ -175,7 +175,7 @@ void oscEvent(OscMessage theOscMessage) {
     
     print("Differences, newBranchesToGrow: " + diff + ", " + newBranchesToGrow + "\n");
     
-    if (newBranchesToGrow < 75) {
+    if (newBranchesToGrow < 25) {
          // Reset and return.
          delayBeforeUpdate = -1;
         

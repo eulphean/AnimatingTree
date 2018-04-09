@@ -14,10 +14,10 @@ class Tree {
    Tree() {      
       // Array of branches for this tree. 
       branches = new ArrayList();
-      color c = color(164, 244, 66);
+      color c = color(164, 255, 66);
       
       // A branch has a starting location, a starting "velocity", and a starting "timer" 
-      Branch b = new Branch(new PVector(width, height),new PVector(-3.0, -2.0), 105, c, 15); // Use 200, 30 for Mac Mini.
+      Branch b = new Branch(new PVector(width, height),new PVector(-3.0, -2.0), 140, c, 25); // Use 200, 30 for Mac Mini.
       
       // Initial root branch. 
       b.isRoot = true;
@@ -90,11 +90,11 @@ class Tree {
        float length = curChild.timer * mag;
 
        // Calculate noise.        
-       float angle = map(length, 0, 300, 4, 1);
-       angle = constrain(angle, 1, 4);
+       float angle = map(length, 0, 400, 3, 1);
+       angle = constrain(angle, 1, 3);
        float minAngle = radians(angle);
-       float noiseOffset = map(noise(xOff + i, yOff + i), 0, 1, -minAngle/10, minAngle/10);
-       noiseOffset = constrain(noiseOffset, -minAngle/10, minAngle/10);
+       float noiseOffset = map(noise(xOff + i, yOff + i), 0, 1, -minAngle/50, minAngle/50);
+       noiseOffset = constrain(noiseOffset, -minAngle/50, minAngle/50);
        
        // New heading with noise.
        float noiseHeading = currentHeading + noiseOffset;
